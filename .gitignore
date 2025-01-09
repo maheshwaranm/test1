@@ -1,0 +1,39 @@
+# Ignore Terraform state files
+*.tfstate
+*.tfstate.*
+
+# Ignore backup files created by Terraform
+*.backup
+
+# Ignore .terraform directory (Terraform modules and plugins)
+.terraform/
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
+
+# Ignore Terraform plan files
+*.tfplan
+
+# Ignore sensitive files (if any)
+*.key
+*.pem
+*.pfx
+
+# Ignore local environment settings
+.env
+
+# Ignore Azure DevOps pipeline logs and artifacts
+pipelines_artifacts/
+pipelines_logs/
+
+# Ignore common system files
+.DS_Store
+Thumbs.db
+
+# Ignore temporary files created by editors or OS
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
