@@ -5,3 +5,7 @@ variable "rg_name" {
 variable "location" {
   type = string
 }
+variable "storage_name" {
+  type = string
+
+}

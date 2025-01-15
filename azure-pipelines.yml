@@ -1,0 +1,76 @@
+trigger: none
+
+pool:
+  name: hbg
+
+parameters:
+  # Resource group Name
+  - name: rgname
+    type: string
+    default: 'basic'
+  # Storage account Name
+  - name: stgaccount
+    type: string
+    default: 'mahesterraformtfstate' 
+  # Container Name
+  - name: container
+    type: string
+    default: tfstate
+  # Tfstate Filename
+  - name: key
+    type: string
+    default: terraform.dev.state
+
+stages:
+  - stage: Plan
+    displayName: Plan
+    jobs:
+      - job: TerraformPlan
+        displayName: Terraform Plan Job
+        steps:
+          - task: TerraformInstaller@1
+            inputs:
+              terraformVersion: 'latest'
+          - task: TerraformTaskV1@0
+            displayName: Terraform Init
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              backendServiceArm: 'devtestconnection'
+              backendAzureRmResourceGroupName: '${{ parameters.rgname }}'
+              backendAzureRmStorageAccountName: '${{ parameters.stgaccount }}'
+              backendAzureRmContainerName: '${{ parameters.container }}'
+              backendAzureRmKey: '${{ parameters.key }}'
+
+          - task: TerraformTaskV1@0
+            displayName: Terraform Validate
+            inputs:
+              provider: 'azurerm'
+              command: 'validate'
+
+          - task: TerraformTaskV1@0
+            displayName: Terraform Plan
+            inputs:
+              provider: 'azurerm'
+              command: 'plan'
+              environmentServiceNameAzureRM: 'devtestconnection'
+
+  - stage: Apply
+    displayName: Apply
+    dependsOn: Plan
+    jobs:
+      - job: TerraformApply
+        displayName: Terraform Apply Job
+        steps:
+          - task: TerraformTaskV1@0
+            displayName: Terraform Init
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              backendServiceArm: 'devtestconnection'
+              backendAzureRmResourceGroupName: '${{ parameters.rgname }}'
+              backendAzureRmStorageAccountName: '${{ parameters.stgaccount }}'
+              backendAzureRmContainerName: '${{ parameters.container }}'
+              backendAzureRmKey: '${{ parameters.key }}'
+
+
